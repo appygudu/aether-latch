@@ -119,7 +119,8 @@ export class Overlay {
 
   playsLabel(): string {
     if (isSubscribed()) return "∞";
-    return String(persist.remainingPlays(false));
+    const left = persist.remainingPlays(false);
+    return `${left} left`;
   }
 
   private async purchase(plan: PlanId): Promise<void> {

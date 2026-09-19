@@ -109,7 +109,7 @@ export class Game {
     this.survived = false;
     this.camera.pos = { ...this.world.mote.pos };
     this.phase = "playing";
-    this.showPrompt = !persist.promptSeen();
+    this.showPrompt = !persist.promptSeen() && persist.playsUsed() <= 1;
     this.overlay.setPrompt(this.showPrompt);
     this.overlay.show("none");
     this.syncHud();

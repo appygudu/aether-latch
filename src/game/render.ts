@@ -4,12 +4,12 @@ import type { Anchor, Debris, Fracture, Mote, Shard, Well } from "./entities";
 import type { Tether } from "./tether";
 
 const stars: { x: number; y: number; z: number; s: number }[] = [];
-for (let i = 0; i < 160; i++) {
+for (let i = 0; i < 220; i++) {
   stars.push({
     x: Math.random() * 4000 - 2000,
     y: Math.random() * 4000 - 2000,
     z: 0.15 + Math.random() * 0.85,
-    s: 0.6 + Math.random() * 1.6,
+    s: 0.7 + Math.random() * 1.8,
   });
 }
 
@@ -86,15 +86,16 @@ function paintSpace(
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, w, h);
 
-  nebula(ctx, w * 0.25 - ox * 0.08, h * 0.3 - oy * 0.08, 260, "rgba(88, 40, 160, 0.22)");
-  nebula(ctx, w * 0.72 - ox * 0.05, h * 0.62 - oy * 0.05, 300, "rgba(20, 90, 140, 0.18)");
-  nebula(ctx, w * 0.5 - ox * 0.03, h * 0.15 - oy * 0.03, 180, "rgba(180, 50, 130, 0.1)");
+  nebula(ctx, w * 0.22 - ox * 0.08, h * 0.28 - oy * 0.08, 340, "rgba(108, 48, 190, 0.42)");
+  nebula(ctx, w * 0.74 - ox * 0.05, h * 0.64 - oy * 0.05, 380, "rgba(18, 110, 168, 0.34)");
+  nebula(ctx, w * 0.52 - ox * 0.03, h * 0.12 - oy * 0.03, 240, "rgba(196, 58, 140, 0.22)");
+  nebula(ctx, w * 0.4 - ox * 0.06, h * 0.78 - oy * 0.06, 220, "rgba(40, 20, 90, 0.28)");
 
   for (const star of stars) {
     const x = ((star.x - ox * star.z) % (w + 80) + (w + 80)) % (w + 80) - 40;
     const y = ((star.y - oy * star.z) % (h + 80) + (h + 80)) % (h + 80) - 40;
     const tw = 0.55 + Math.sin(time * 2 + star.x) * 0.45;
-    ctx.fillStyle = `rgba(230, 236, 255, ${0.25 + star.z * 0.55 * tw})`;
+    ctx.fillStyle = `rgba(230, 236, 255, ${0.35 + star.z * 0.6 * tw})`;
     ctx.fillRect(x, y, star.s, star.s);
   }
 }
@@ -140,10 +141,10 @@ function drawAnchors(
     }
 
     ctx.beginPath();
-    ctx.strokeStyle = chosen ? COLORS.cyan : inRange ? "#c5b6ff" : "rgba(180,170,220,0.55)";
-    ctx.lineWidth = 2.2;
+    ctx.strokeStyle = chosen ? COLORS.cyan : inRange ? "#d7cbff" : "rgba(198,188,232,0.75)";
+    ctx.lineWidth = 2.4;
     ctx.shadowColor = chosen ? COLORS.cyan : COLORS.violet;
-    ctx.shadowBlur = chosen ? 16 : 8;
+    ctx.shadowBlur = chosen ? 18 : 12;
     ctx.arc(x, y, ANCHOR_RADIUS, 0, Math.PI * 2);
     ctx.stroke();
     ctx.shadowBlur = 0;
@@ -188,11 +189,17 @@ function drawFractures(ctx: CanvasRenderingContext2D, fractures: Fracture[], ox:
     const count = Math.max(2, Math.floor(1 + (f.points.length - 1) * f.grow));
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
-    ctx.strokeStyle = "rgba(8,4,14,0.92)";
-    ctx.lineWidth = 10;
+    ctx.shadowColor = "rgba(186, 80, 255, 0.85)";
+    ctx.shadowBlur = 16;
+    ctx.strokeStyle = "rgba(12, 6, 20, 0.95)";
+    ctx.lineWidth = 14;
     strokePoly(ctx, f.points, count, ox, oy);
-    ctx.strokeStyle = "rgba(180, 70, 255, 0.55)";
-    ctx.lineWidth = 2;
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = "rgba(210, 110, 255, 0.8)";
+    ctx.lineWidth = 3.2;
+    strokePoly(ctx, f.points, count, ox, oy);
+    ctx.strokeStyle = "rgba(255, 210, 255, 0.35)";
+    ctx.lineWidth = 1;
     strokePoly(ctx, f.points, count, ox, oy);
   }
 }
@@ -215,8 +222,9 @@ function drawDebris(ctx: CanvasRenderingContext2D, debris: Debris[], ox: number,
     ctx.save();
     ctx.translate(d.pos.x - ox, d.pos.y - oy);
     ctx.rotate(d.rot);
-    ctx.fillStyle = "#14101c";
-    ctx.strokeStyle = "rgba(160,140,200,0.35)";
+    ctx.fillStyle = "#1b1526";
+    ctx.strokeStyle = "rgba(198,176,230,0.7)";
+    ctx.lineWidth = 1.4;
     ctx.beginPath();
     for (let i = 0; i < d.sides; i++) {
       const a = (i / d.sides) * Math.PI * 2;
@@ -285,9 +293,9 @@ function drawTether(ctx: CanvasRenderingContext2D, mote: Mote, tether: Tether, o
   const cy = (my + ty) / 2 + sag;
 
   ctx.strokeStyle = taut > 0.35 ? "#e8ffff" : COLORS.cyan;
-  ctx.lineWidth = 1.6 + taut * 1.4;
+  ctx.lineWidth = 2.2 + taut * 1.8;
   ctx.shadowColor = COLORS.cyan;
-  ctx.shadowBlur = 10 + taut * 10;
+  ctx.shadowBlur = 14 + taut * 12;
   ctx.beginPath();
   ctx.moveTo(mx, my);
   ctx.quadraticCurveTo(cx, cy, tx, ty);
@@ -320,12 +328,12 @@ function drawMote(
     ctx.stroke();
   }
 
-  const bloom = ctx.createRadialGradient(x, y, 0, x, y, 26);
-  bloom.addColorStop(0, pro ? "rgba(255,160,220,0.55)" : "rgba(124,244,255,0.5)");
+  const bloom = ctx.createRadialGradient(x, y, 0, x, y, 34);
+  bloom.addColorStop(0, pro ? "rgba(255,160,220,0.7)" : "rgba(124,244,255,0.7)");
   bloom.addColorStop(1, "rgba(0,0,0,0)");
   ctx.fillStyle = bloom;
   ctx.beginPath();
-  ctx.arc(x, y, 26, 0, Math.PI * 2);
+  ctx.arc(x, y, 34, 0, Math.PI * 2);
   ctx.fill();
 
   ctx.fillStyle = "#f5ffff";

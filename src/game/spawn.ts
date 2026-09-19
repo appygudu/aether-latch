@@ -21,13 +21,23 @@ export function createWorld(rng: Rng): World {
   const shards: Shard[] = [
     { pos: vec(90, -90), pulse: 0, taken: false },
     { pos: vec(-40, -200), pulse: 1, taken: false },
+    { pos: vec(210, -240), pulse: 2, taken: false },
   ];
   return {
     mote,
     anchors,
     shards,
-    fractures: [],
-    debris: [],
+    fractures: [offsetFracture(420, -80)],
+    debris: [
+      {
+        pos: vec(-280, 120),
+        vel: vec(12, -8),
+        rot: 0.4,
+        spin: 0.6,
+        size: 14,
+        sides: 5,
+      },
+    ],
     wells: [],
   };
 }
@@ -63,11 +73,11 @@ export function maintainField(world: World, rng: Rng, t: number, intensity: numb
     });
   }
 
-  if (t > 8 && world.fractures.length < 2 + intensity * 5 && rng.next() < 0.018 + intensity * 0.03) {
+  if (t > 3.5 && world.fractures.length < 2 + intensity * 5 && rng.next() < 0.028 + intensity * 0.035) {
     world.fractures.push(makeFracture(rng, origin, intensity));
   }
 
-  if (t > 6 && world.debris.length < 3 + intensity * 6 && rng.next() < 0.02 + intensity * 0.025) {
+  if (t > 2.8 && world.debris.length < 3 + intensity * 6 && rng.next() < 0.028 + intensity * 0.03) {
     world.debris.push(makeDebris(rng, origin));
   }
 
@@ -114,6 +124,22 @@ function makeAnchor(rng: Rng, x: number, y: number, intensity: number): Anchor {
     orbit: intensity > 0.2 ? rng.range(0, 46) : 0,
     spin: rng.range(0.4, 1.4) * rng.sign(),
     drift: vec(rng.range(-18, 18), rng.range(-10, 16)),
+  };
+}
+
+function offsetFracture(x: number, y: number): Fracture {
+  return {
+    points: [
+      { x, y },
+      { x: x + 70, y: y + 36 },
+      { x: x + 118, y: y - 10 },
+      { x: x + 190, y: y + 48 },
+      { x: x + 250, y: y + 8 },
+    ],
+    grow: 0.85,
+    max: 1,
+    age: 0,
+    life: 14,
   };
 }
 
