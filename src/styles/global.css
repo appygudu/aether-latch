@@ -59,7 +59,8 @@ body {
 .prompt[hidden],
 .overlay[hidden],
 .overlay.hidden,
-.panel[hidden] {
+.panel[hidden],
+.pro-badge[hidden] {
   display: none !important;
 }
 

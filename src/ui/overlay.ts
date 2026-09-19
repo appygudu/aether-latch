@@ -101,6 +101,7 @@ export class Overlay {
   hudState(score: number, combo: number, collapse: number, playsLabel: string): void {
     el("hud-score").textContent = fmt(score);
     el("hud-plays").textContent = playsLabel;
+    el("hud-plays-label").textContent = isSubscribed() ? "Plays" : "Plays left";
     el("collapse-fill").style.width = `${Math.min(100, collapse * 100)}%`;
     this.comboEl.textContent = `×${combo}`;
     if (combo !== this.lastCombo) {
@@ -119,8 +120,7 @@ export class Overlay {
 
   playsLabel(): string {
     if (isSubscribed()) return "∞";
-    const left = persist.remainingPlays(false);
-    return `${left} left`;
+    return String(persist.remainingPlays(false));
   }
 
   private async purchase(plan: PlanId): Promise<void> {
