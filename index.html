@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"
+    />
+    <meta name="theme-color" content="#07060d" />
+    <meta
+      name="description"
+      content="Aether Latch — slingshot a luminous mote through collapsing void-anchors."
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Aether Latch</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="game" aria-label="Aether Latch playfield"></canvas>
+
+      <div id="hud" class="hud" hidden>
+        <div class="hud-left">
+          <div class="hud-label">Score</div>
+          <div id="hud-score" class="hud-value">0</div>
+        </div>
+        <div class="hud-center">
+          <div class="collapse-wrap">
+            <div class="hud-label">Collapse</div>
+            <div class="collapse-bar" aria-hidden="true">
+              <div id="collapse-fill" class="collapse-fill"></div>
+            </div>
+          </div>
+          <div id="hud-combo" class="combo">×1</div>
+        </div>
+        <div class="hud-right">
+          <div class="hud-label">Plays</div>
+          <div id="hud-plays" class="hud-value">3</div>
+        </div>
+      </div>
+
+      <div id="prompt" class="prompt" hidden>Hold to latch · Release to fly</div>
+
+      <button id="mute" class="icon-btn" type="button" aria-label="Mute audio">
+        <span id="mute-icon">♪</span>
+      </button>
+
+      <div id="overlay" class="overlay">
+        <div id="screen-title" class="panel title-panel">
+          <p class="eyebrow">Void transit · studio build</p>
+          <h1>Aether Latch</h1>
+          <p class="pitch">
+            Slingshot a luminous mote through collapsing void-anchors — latch, swing,
+            release, chain — before the dark closes in.
+          </p>
+          <button id="btn-start" class="btn primary" type="button">Enter the void</button>
+          <p id="title-plays" class="meta">3 free plays remaining</p>
+          <p id="title-stats" class="meta dim">No high score yet</p>
+        </div>
+
+        <div id="screen-results" class="panel results-panel" hidden>
+          <p id="results-kicker" class="eyebrow">Dissolved</p>
+          <h2 id="results-title">The dark took you</h2>
+          <div id="pro-badge" class="pro-badge" hidden>Pro</div>
+          <div class="stat-grid">
+            <div>
+              <div class="hud-label">Score</div>
+              <div id="results-score" class="stat-num">0</div>
+            </div>
+            <div>
+              <div class="hud-label">Best combo</div>
+              <div id="results-combo" class="stat-num">×1</div>
+            </div>
+            <div>
+              <div class="hud-label">Shards</div>
+              <div id="results-shards" class="stat-num">0</div>
+            </div>
+            <div>
+              <div class="hud-label">Time</div>
+              <div id="results-time" class="stat-num">0.0s</div>
+            </div>
+          </div>
+          <p id="results-record" class="meta dim"></p>
+          <button id="btn-retry" class="btn primary" type="button">Retry</button>
+          <p class="hint">Tap anywhere or press the button — instant restart</p>
+        </div>
+
+        <div id="screen-gate" class="panel gate-panel" hidden>
+          <p class="eyebrow">Aether Pro</p>
+          <h2>Stay in the void</h2>
+          <p class="pitch">
+            Your three free transits are complete. Subscribe for unlimited runs, a Pro
+            mark on every result, and the locked Aurora trail.
+          </p>
+          <div class="plans">
+            <button id="plan-yearly" class="plan featured" type="button">
+              <span class="plan-tag">Best value · ~50% off</span>
+              <span class="plan-name">Yearly</span>
+              <span class="plan-price">$29.99<span> / year</span></span>
+              <span class="plan-note">About $2.50 a month</span>
+            </button>
+            <button id="plan-monthly" class="plan" type="button">
+              <span class="plan-name">Monthly</span>
+              <span class="plan-price">$4.99<span> / month</span></span>
+              <span class="plan-note">Cancel anytime</span>
+            </button>
+          </div>
+          <ul class="perks">
+            <li>Unlimited plays</li>
+            <li>Pro badge on results</li>
+            <li>Aurora trail cosmetic</li>
+          </ul>
+          <button id="btn-restore" class="btn ghost" type="button">
+            Restore / already subscribed
+          </button>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

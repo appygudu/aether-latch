@@ -1,0 +1,17 @@
+{
+  "name": "Aether Latch",
+  "short_name": "Aether Latch",
+  "description": "Slingshot a luminous mote through collapsing void-anchors.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#07060d",
+  "theme_color": "#07060d",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
