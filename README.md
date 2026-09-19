@@ -2,7 +2,7 @@
 
 Slingshot a luminous mote through collapsing void-anchors — latch, swing, release, chain — before the dark closes in.
 
-A production-ready browser game: Vite + TypeScript + Canvas 2D, playable on desktop and mobile, with a three-play freemium gate and a stubbed subscription flow.
+A production-ready browser game: Vite + TypeScript + Canvas 2D, playable on desktop and mobile, with a three-play freemium gate and live Razorpay hosted checkout.
 
 ## Play
 
@@ -35,12 +35,14 @@ New players get **exactly 3 free plays**, stored as `aether_plays_used` in `loca
 
 After the third run, a subscription gate appears. The player cannot start another run until they are marked subscribed.
 
-| Plan | Price | Notes |
+| Plan | Price | Razorpay checkout (live) |
 | --- | --- | --- |
-| Monthly | **$4.99 / month** | Cancel anytime |
-| Yearly | **$29.99 / year** | Highlighted as best value (~50% off) |
+| Monthly | **₹419 / month** (~$4.99) | https://rzp.io/rzp/9v5vQRc4 |
+| Yearly | **₹2499 / year** (~$29.99) | https://rzp.io/rzp/ObFehb1q |
 
-For this demo, **Subscribe** and **Restore / already subscribed** write `aether_subscribed=true` (see `src/monetisation/subscribe.ts`). No live payment keys are required.
+Choosing a plan opens the Razorpay hosted payment link in a new tab. Hosted links cannot callback without a backend, so **I've paid — Unlock Pro** (restore / already subscribed) writes `aether_subscribed=true` in this browser after the player returns (`src/monetisation/subscribe.ts`).
+
+Razorpay plan IDs (docs only): `plan_TdpXQDppRu26iS` (monthly), `plan_Tdpa4NZjvSmkPf` (yearly).
 
 Subscribers receive:
 
@@ -62,13 +64,11 @@ Subscribers receive:
 
 To reset a local profile, clear those keys in DevTools.
 
-## Real payments (next)
+## Payments
 
-`subscribe()` and `restore()` are stubs with `TODO(payments)` comments. Plug in:
+The Stripe stub is replaced by **Razorpay hosted payment links**. `subscribe()` opens the live checkout URL; it does not set the entitlement. `restore()` / **I've paid — Unlock Pro** sets `aether_subscribed` locally.
 
-1. **Web:** Stripe Checkout Session on subscribe; Stripe Customer Portal (or a receipt lookup) on restore. Keep secret keys on a tiny backend.
-2. **Native wrappers:** RevenueCat packages mapped to `aether_pro_monthly` / `aether_pro_yearly`.
-3. After a real purchase, set the same `aether_subscribed` entitlement (and later, a signed account entitlement).
+A later backend can verify Razorpay webhooks and issue a signed entitlement so Pro survives a new browser. Native wrappers can still map RevenueCat packages to `aether_pro_monthly` / `aether_pro_yearly`.
 
 See [LAUNCH.md](./LAUNCH.md) for platform sequence and KPIs.
 
@@ -78,9 +78,9 @@ See [LAUNCH.md](./LAUNCH.md) for platform sequence and KPIs.
 src/audio/synth.ts            Procedural Web Audio
 src/core/                     Config, math, input, camera, RNG
 src/game/                     Loop, tether physics, entities, spawn, render
-src/monetisation/subscribe.ts Freemium stub (Stripe / RevenueCat TODOs)
+src/monetisation/subscribe.ts Razorpay hosted checkout + local unlock
 src/storage/persist.ts        localStorage profile
 src/ui/overlay.ts             Title, HUD, results, gate
 ```
 
-No heavy engine. No accounts or live APIs in v1.
+No heavy engine. No Razorpay SDK or payment backend in this pass — hosted links only.

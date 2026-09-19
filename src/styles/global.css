@@ -355,11 +355,40 @@ h2 {
   font-weight: 600;
 }
 
+.plan-usd {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
 .plan-note {
   display: block;
   margin-top: 4px;
   color: var(--muted);
   font-size: 12px;
+}
+
+.plan-cta {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(124, 244, 255, 0.14);
+  color: var(--cyan);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.plan:hover .plan-cta {
+  background: rgba(124, 244, 255, 0.22);
+}
+
+.gate-hint {
+  margin: 0 0 10px;
+  color: #d7f9ff;
 }
 
 .perks {

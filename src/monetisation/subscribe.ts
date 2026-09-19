@@ -6,11 +6,23 @@ export interface Plan {
   id: PlanId;
   label: string;
   price: string;
+  usd: string;
 }
 
 export const PLANS: Record<PlanId, Plan> = {
-  monthly: { id: "monthly", label: "Monthly", price: "$4.99 / month" },
-  yearly: { id: "yearly", label: "Yearly", price: "$29.99 / year" },
+  monthly: { id: "monthly", label: "Monthly", price: "₹419 / month", usd: "~$4.99" },
+  yearly: { id: "yearly", label: "Yearly", price: "₹2499 / year", usd: "~$29.99" },
+};
+
+/**
+ * Live Razorpay hosted checkout (Test Mode OFF).
+ * Plan IDs are documented only — hosted links do not need the SDK:
+ *   monthly → plan_TdpXQDppRu26iS
+ *   yearly  → plan_Tdpa4NZjvSmkPf
+ */
+export const RAZORPAY_CHECKOUT: Record<PlanId, string> = {
+  monthly: "https://rzp.io/rzp/9v5vQRc4",
+  yearly: "https://rzp.io/rzp/ObFehb1q",
 };
 
 export function isSubscribed(): boolean {
@@ -23,47 +35,33 @@ export function currentPlan(): PlanId | null {
 }
 
 /**
- * Simulated checkout for the v1 demo.
- *
- * TODO(payments): Replace this with Stripe Checkout Session creation.
- *   1. POST /api/checkout { plan } with an authenticated or anonymous customer id
- *   2. Redirect to session.url
- *   3. On success_url, verify the session and set the subscriber entitlement
- *
- * TODO(payments): On Capacitor / TWA / App Store builds, swap this for
- * RevenueCat `Purchases.purchasePackage()` and map product ids:
- *   - monthly → aether_pro_monthly
- *   - yearly  → aether_pro_yearly
+ * Open Razorpay hosted checkout for the chosen plan in a new tab.
+ * Does not set the local entitlement — hosted payment links have no
+ * webhook/callback without a backend. The player unlocks via
+ * `unlockThisBrowser()` after they return.
  */
-export async function subscribe(plan: PlanId): Promise<boolean> {
-  // TODO(payments): live Stripe / RevenueCat purchase flow goes here.
-  // Never put secret API keys in the client. Use a tiny backend or
-  // Stripe Checkout with a restricted publishable key only.
-  await delay(280);
-  localStorage.setItem(STORAGE.subscribed, "true");
-  localStorage.setItem(STORAGE.plan, plan);
-  return true;
+export function subscribe(plan: PlanId): boolean {
+  const url = RAZORPAY_CHECKOUT[plan];
+  window.open(url, "_blank", "noopener,noreferrer");
+  return false;
 }
 
 /**
- * Restore an existing entitlement.
- *
- * TODO(payments): Web — send the player to Stripe Customer Portal, or
- * look up the customer by email / magic link and refresh entitlements.
- * TODO(payments): Native — call RevenueCat `Purchases.restorePurchases()`
- * and then `Purchases.getCustomerInfo()`.
+ * Mark this browser as Pro after a completed Razorpay payment
+ * (or when restoring an existing subscription on this device).
+ * Honest client-side entitlement — no receipt verification yet.
  */
-export async function restore(): Promise<boolean> {
-  await delay(220);
-  if (isSubscribed()) return true;
-  // Demo path: treat an explicit restore as a successful receipt replay.
+export function unlockThisBrowser(plan?: PlanId | null): boolean {
   localStorage.setItem(STORAGE.subscribed, "true");
-  if (!localStorage.getItem(STORAGE.plan)) {
+  if (plan) {
+    localStorage.setItem(STORAGE.plan, plan);
+  } else if (!localStorage.getItem(STORAGE.plan)) {
     localStorage.setItem(STORAGE.plan, "yearly");
   }
   return true;
 }
 
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => window.setTimeout(resolve, ms));
+/** Restore / I already subscribed — same local unlock as post-payment. */
+export function restore(plan?: PlanId | null): boolean {
+  return unlockThisBrowser(plan);
 }

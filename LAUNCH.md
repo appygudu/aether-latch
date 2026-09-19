@@ -4,17 +4,17 @@ Concrete path from this static build to paid subscribers. No theatre: ship the w
 
 ## 1. Primary launch platform
 
-**Web on your own domain, installed as a PWA, billed with Stripe subscriptions.**
+**Web on your own domain, installed as a PWA, billed with Razorpay hosted checkout.**
 
 That is the fastest path to money and the easiest place to iterate on feel.
 
 - Deploy `dist/` (from `npm run build`) to Cloudflare Pages, Netlify, or equivalent on `play.aetherlatch.game` (or your brand).
 - Keep the existing `manifest.webmanifest` and theme colour so “Add to Home Screen” works on iOS/Android without a store review.
-- Put Stripe Checkout behind `subscribe()` and Customer Portal behind `restore()` — see `src/monetisation/subscribe.ts`. Checkout is hosted; you do not have to store cards.
-- Price as shipped: **$4.99 / month** and **$29.99 / year** (~50% off). Yearly is the default highlight on the gate that appears after play #3.
+- Put Razorpay hosted links behind `subscribe()` (monthly https://rzp.io/rzp/9v5vQRc4, yearly https://rzp.io/rzp/ObFehb1q) and local unlock behind **I've paid — Unlock Pro** — see `src/monetisation/subscribe.ts`. Hosted checkout does not store cards and cannot callback without a backend.
+- Price as shipped: **₹419 / month** (~$4.99) and **₹2499 / year** (~$29.99, ~50% off). Yearly is the default highlight on the gate that appears after play #3.
 - Why not stores first: review lag, 15–30% IAP tax, and you will change latch feel weekly. The web build is already the product.
 
-Success on this step: a stranger can play three runs, hit the gate, pay, and immediately get unlimited plays + Pro badge + Aurora trail.
+Success on this step: a stranger can play three runs, hit the gate, pay on Razorpay, tap I've paid — Unlock Pro, and get unlimited plays + Pro badge + Aurora trail.
 
 ## 2. Distribution that scales
 
@@ -56,7 +56,7 @@ If D1 is weak, fix feel — not the paywall. If D1 is strong and conversion is w
 
 In priority order, after this v1:
 
-1. **Real Stripe Checkout + Customer Portal.** Webhook to record entitlements; never trust the client flag alone.
+1. **Razorpay webhooks + signed entitlement.** Hosted links are live; a tiny backend should record payments and never trust the client flag alone.
 2. **Account sync.** Anonymous id → optional email magic link so Pro survives a new browser. Same flag, server-authoritative.
 3. **Leaderboards.** Weekly seed + signed scores. Spectator clips need a number to chase.
 4. **Seasonal challenges.** One rotating modifier (dense wells, fragile anchors) — still procedural, still no content farm.
