@@ -25,6 +25,7 @@ export class Overlay {
   private retryBtn = el<HTMLButtonElement>("btn-retry");
   private onPlay: (() => void) | null = null;
   private lastCombo = 1;
+  private pendingPlan: PlanId | null = null;
 
   constructor() {
     this.startBtn.addEventListener("click", (e) => {
@@ -41,13 +42,13 @@ export class Overlay {
     });
 
     el<HTMLButtonElement>("plan-yearly").addEventListener("click", () => {
-      void this.purchase("yearly");
+      this.purchase("yearly");
     });
     el<HTMLButtonElement>("plan-monthly").addEventListener("click", () => {
-      void this.purchase("monthly");
+      this.purchase("monthly");
     });
-    el<HTMLButtonElement>("btn-restore").addEventListener("click", () => {
-      void this.doRestore();
+    el<HTMLButtonElement>("btn-unlock").addEventListener("click", () => {
+      this.doUnlock();
     });
   }
 
@@ -123,20 +124,19 @@ export class Overlay {
     return String(persist.remainingPlays(false));
   }
 
-  private async purchase(plan: PlanId): Promise<void> {
-    const ok = await subscribe(plan);
-    if (ok) {
-      this.refreshTitle();
-      this.show("title");
-    }
+  private purchase(plan: PlanId): void {
+    this.pendingPlan = plan;
+    subscribe(plan);
+    const hint = el("gate-hint");
+    hint.textContent =
+      "Razorpay opened in a new tab. After you finish paying, come back and tap I've paid — Unlock Pro.";
+    hint.hidden = false;
   }
 
-  private async doRestore(): Promise<void> {
-    const ok = await restore();
-    if (ok) {
-      this.refreshTitle();
-      this.show("title");
-    }
+  private doUnlock(): void {
+    restore(this.pendingPlan);
+    this.refreshTitle();
+    this.show("title");
   }
 }
 
